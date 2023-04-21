@@ -1,3 +1,6 @@
+.hidden_file
+log.txt
+
 # Logs
 logs
 *.log
@@ -130,6 +133,3 @@ dist
 .pnp.*
 
 #_____________________________
-
-.hidden_file
-log.txt
