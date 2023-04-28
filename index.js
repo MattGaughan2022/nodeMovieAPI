@@ -1,6 +1,11 @@
 const express = require("express"),
   morgan = require("morgan"), //allows for non-fs logging
   path = require("path");
+fs = require("fs");
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, "log.txt"), {
+  flags: "a",
+});
 
 const app = express();
 
@@ -48,7 +53,7 @@ let topMovies = [
 ];
 
 // setup the logger
-app.use(morgan("common"));
+app.use(morgan("common", { stream: accessLogStream }));
 
 app.get("/", (req, res) => {
   res.send("Default text of my choosing!");
