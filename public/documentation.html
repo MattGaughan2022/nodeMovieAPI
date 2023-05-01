@@ -6,3 +6,61 @@ interact with the API to make a user profile. This profile will allow them to
 store a list of favorite movies they can add on to. The user will be able to
 modify their profile in multiple ways and also de-register from the platform
 entirely.
+
+<ul>
+  <li>
+    Return a list of ALL movies to the user. GET method, accessed by '/movies'
+    URL. No parameters. Returns JSON list of movies as so '{ "title":
+    "movie_title" "director": "directorName" }'
+  </li>
+  <li>
+    Return data (description, genre, director, image URL, whether it’s featured
+    or not) about a single movie by title to the user. GET method, accessed by
+    '/movies/:movieTitle' where ':movieTitle' is the title of the movie.
+  </li>
+  <li>
+    Return a list of ALL genres to the user. GET method, accessed by '/genres'
+    URL. No parameters. Returns JSON list (NOT YET IMPLEMENTED) of genres as so
+    '{ "Genre": "Thriller" "Description": "Action-packed and fast-paced with
+    moments full of tension, anxiety, and fear" }'
+  </li>
+  <li>
+    Return data of the specified genre to the user. GET method, accessed by
+    '/genres/:genreName' URL where ':name' parameter is the name of a genre.
+    Returns JSON list (NOT YET IMPLEMENTED) of the specific genre as so '{
+    "Genre": "Thriller" "Description": "Action-packed and fast-paced with
+    moments full of tension, anxiety, and fear" }'
+  </li>
+  <li>
+    Return data of the specified director to the user. GET method, accessed by
+    '/directors/:name' URL where ':name' parameter is the name of a director.
+    Returns JSON list (NOT YET IMPLEMENTED) of the specific director as so '{
+    "Full Name": "Hayao Miyazaki" "Birth Year": "1941" }'
+  </li>
+  <li>
+    Allow new users to register via POST method. URL ends in '/users/:name'
+    where ':name' is the username of the new user.
+  </li>
+  <li>
+    Allow new users to edit their info (e.g. username) via PUT method. URL ends
+    in '/users/userInfo/:name' where ':name' is the username of the new user.
+  </li>
+  <li>
+    Allow users to create a list of favorite movies via POST method to the URL
+    ending '/user/lists/:name' where ':name' is the name of the list.
+  </li>
+  <li>
+    Allow users to update a list of favorite movies and ADD a movie to the list
+    via PUT method to the URL ending '/user/lists/:name' where ':name' is the
+    name of the list.
+  </li>
+  <li>
+    Allow users to update a list of favorite movies and REMOVE a movie to the
+    list via DELETE method to the URL ending '/user/lists/:name' where ':name'
+    is the name of the list.
+  </li>
+  <li>
+    Allow users to DE-register via DELETE method. URL ends in '/users/:name'
+    where ':name' is the username of the user.
+  </li>
+</ul>
