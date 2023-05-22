@@ -16,7 +16,43 @@ entirely.
   <li>
     Return data (description, genre, director, image URL, whether it’s featured
     or not) about a single movie by title to the user. GET method, accessed by
-    '/movies/:movieTitle' where ':movieTitle' is the title of the movie.
+    '/movies/:movieTitle' where ':movieTitle' is the title of the movie. See END
+    of documentation page for full list of movies.
+    <ul>
+      <li>
+        Returns a JSON object as such:
+        <code>
+          <br />
+          {
+          <br />
+          "Genre": "645d16ef53382229157f8184",
+          <br />
+          "Director": "645d133253382229157f8173",
+          <br />
+          "_id": "645d231d53382229157f818b",
+          <br />
+          "Title": "Spirited Away",
+          <br />
+          "Description": "In this animated feature by noted Japanese director
+          Hayao Miyazaki, 10-year-old Chihiro (Rumi Hiiragi) and her parents
+          (Takashi Naitô, Yasuko Sawaguchi) stumble upon a seemingly abandoned
+          amusement park. After her mother and father are turned into giant
+          pigs, Chihiro meets the mysterious Haku (Miyu Irino), who explains
+          that the park is a resort for supernatural beings who need a break
+          from their time spent in the earthly realm, and that she must work
+          there to free herself and her parents.",
+          <br />
+          "Imageurl":
+          "https://m.media-amazon.com/images/M/MV5BMjlmZmI5MDctNDE2YS00YWE0LWE5ZWItZDBhYWQ0NTcxNWRhXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
+          <br />
+          "ReleaseYear": "2002",
+          <br />
+          "Ratings": "8.6"
+          <br />
+          }
+        </code>
+      </li>
+    </ul>
   </li>
   <li>
     Return a list of ALL genres to the user. GET method, accessed by '/genres'
@@ -39,11 +75,51 @@ entirely.
   </li>
   <li>
     Allow new users to register via POST method. URL ends in '/users/:name'
-    where ':name' is the username of the new user.
+    where ':name' is the username of the new user. Fields included in a user's
+    object are: "Username", "Password" "Email", "Birthday", and
+    "FavoriteMovies"(array).
+    <ul>
+      <li>
+        Expects a JSON object as such:
+        <code>
+          <br />
+          {
+          <br />
+          "Username" : "jimothywilliams",
+          <br />
+          "Password" : "smithjimmothy",
+          <br />
+          "Email" : "jimmy@smith.net"
+          <br />
+          }
+        </code>
+      </li>
+      <li>
+        Will return a JSON object response showing POSTed user, filled required
+        fields, and non-empty optional fields (birthday, FavoriteMovies)
+      </li>
+    </ul>
   </li>
   <li>
     Allow new users to edit their info (e.g. username) via PUT method. URL ends
-    in '/users/userInfo/:name' where ':name' is the username of the new user.
+    in '/users/:name' where ':name' is the current username of the user.
+    <ul>
+      <li>
+        Expects a JSON object as such:
+        <code>
+          <br />
+          {
+          <br />
+          "Username" : "jimothywilliams",
+          <br />
+          "Password" : "smithjimmothy",
+          <br />
+          "Email" : "jimmy@smith.net"
+          <br />
+          }
+        </code>
+      </li>
+    </ul>
   </li>
   <li>
     Allow users to create a list of favorite movies via POST method to the URL
@@ -60,7 +136,21 @@ entirely.
     is the name of the list.
   </li>
   <li>
-    Allow users to DE-register via DELETE method. URL ends in '/users/:name'
-    where ':name' is the username of the user.
+    Allow users to DE-register via DELETE method. URL ends in '/users/:Username'
+    where ':name' is the username of the user. Expects a ':Username' parameter
+    of a valid, registered username. Simple response stating the user is
+    deleted, or the user was not found.
   </li>
+</ul>
+<p>Full list of movies:</p>
+<ul>
+  <li>Spirited Away</li>
+  <li>Saving Private Ryan</li>
+  <li>The Truman Show</li>
+  <li>Casino Royale(2006)</li>
+  <li>Interstellar</li>
+  <li>Inception</li>
+  <li>42</li>
+  <li>Black Panther</li>
+  <li>Coco</li>
 </ul>
