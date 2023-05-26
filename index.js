@@ -34,6 +34,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//app.use(express.bodyParser());
+
+let auth = require("./auth")(app);
+
+const passport = require("passport");
+require("./passport");
+
 let topMovies = [
   {
     title: "Spirited Away",
@@ -110,16 +117,20 @@ app.get("/users/:Username", (req, res) => {
     });
 });
 
-app.get("/movies", (req, res) => {
-  Movies.find()
-    .then((movies) => {
-      res.status(201).json(movies);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+app.get(
+  "/movies",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Movies.find()
+      .then((movies) => {
+        res.status(201).json(movies);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 app.get("/movies/:movieTitle", (req, res) => {
   Movies.findOne({ Title: req.params.movieTitle })
