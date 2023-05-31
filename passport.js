@@ -21,9 +21,19 @@ passport.use(
             console.log("Username not found.");
             return document(null, false, { message: "Username was not found" });
           }
+          if (error) {
+            console.log(error);
+            return asyncFunc(error);
+          }
+
+          if (!user.validatePassword(password)) {
+            console.log("incorrect password");
+            return asyncFunc(null, false, { message: "Incorrect password." });
+          }
 
           return asyncFunc(null, user);
         })
+
         .catch((error) => {
           console.log("Something went wrong");
           return asyncFunc("Error: " + error).status(400);
