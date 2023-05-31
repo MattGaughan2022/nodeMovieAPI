@@ -95,27 +95,35 @@ app.get("/secreturl", (req, res) => {
   res.send("This is a secret url with super top-secret content.");
 });
 
-app.get("/users", (req, res) => {
-  Users.find()
-    .then((users) => {
-      res.status(201).json(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+app.get(
+  "/users",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Users.find()
+      .then((users) => {
+        res.status(201).json(users);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
-app.get("/users/:Username", (req, res) => {
-  Users.findOne({ Username: req.params.Username })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+app.get(
+  "/users/:Username",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+      .then((user) => {
+        res.json(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 app.get(
   "/movies",
@@ -132,16 +140,20 @@ app.get(
   }
 );
 
-app.get("/movies/:movieTitle", (req, res) => {
-  Movies.findOne({ Title: req.params.movieTitle })
-    .then((movie) => {
-      res.json(movie);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+app.get(
+  "/movies/:movieTitle",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Movies.findOne({ Title: req.params.movieTitle })
+      .then((movie) => {
+        res.json(movie);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 app.get("/genres", (req, res) => {
   res.send(
@@ -161,58 +173,66 @@ app.get("/directors/:name", (req, res) => {
   );
 });
 
-app.post("/users", (req, res) => {
-  Users.findOne({ Username: req.body.Username })
-    .then((user) => {
+app.post(
+  "/users",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(400).send(req.body.Username + "already exists");
+        } else {
+          Users.create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          })
+            .then((user) => {
+              res.status(201).json(user);
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send("Error: " + error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send("Error: " + error);
+      });
+  }
+);
+
+app.put(
+  "/users/:Username",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Users.findOne({ Username: req.params.Username }).then((user) => {
       if (user) {
-        return res.status(400).send(req.body.Username + "already exists");
-      } else {
-        Users.create({
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        })
+        Users.updateOne(
+          { Username: req.params.Username },
+          {
+            $set: {
+              Username: req.body.Username,
+              Password: req.body.Password,
+              Email: req.body.Email,
+            },
+          }
+        )
           .then((user) => {
             res.status(201).json(user);
           })
           .catch((error) => {
             console.error(error);
-            res.status(500).send("Error: " + error);
+            return res.status(500).send("Error: " + error);
           });
+      } else {
+        return res.status(400).send(req.params.Username + " does not exist");
       }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send("Error: " + error);
     });
-});
-
-app.put("/users/:Username", (req, res) => {
-  Users.findOne({ Username: req.params.Username }).then((user) => {
-    if (user) {
-      Users.updateOne(
-        { Username: req.params.Username },
-        {
-          $set: {
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-          },
-        }
-      )
-        .then((user) => {
-          res.status(201).json(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          return res.status(500).send("Error: " + error);
-        });
-    } else {
-      return res.status(400).send(req.params.Username + " does not exist");
-    }
-  });
-});
+  }
+);
 
 app.post("/user/lists/:name", (req, res) => {
   res.send("Successful POST request for creating a new movie list");
@@ -224,20 +244,24 @@ app.put("/user/lists/:name", (req, res) => {
 app.delete("/user/lists/:name", (req, res) => {
   res.send("Successful DELETE request for updating list info (remove movie)");
 });
-app.delete("/users/:Username", (req, res) => {
-  Users.findOneAndRemove({ Username: req.params.Username })
-    .then((user) => {
-      if (!user) {
-        res.status(400).send(req.params.Username + " was not found");
-      } else {
-        res.status(200).send(req.params.Username + " was deleted.");
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+app.delete(
+  "/users/:Username",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Users.findOneAndRemove({ Username: req.params.Username })
+      .then((user) => {
+        if (!user) {
+          res.status(400).send(req.params.Username + " was not found");
+        } else {
+          res.status(200).send(req.params.Username + " was deleted.");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 app.use("/", express.static("public")); //allow access to multiple files like documentation
 

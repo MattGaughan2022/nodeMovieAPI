@@ -1,4 +1,5 @@
-const jwtSecret = "your_jwt_secret";
+const jwtSecret =
+  "f4b9ab29802618cd13aeb31bc3c5c7dd0b8c265f0831c9403606336334428723";
 
 const jwt = require("jsonwebtoken"),
   passport = require("passport");
@@ -17,9 +18,15 @@ let generateJWTToken = (user) => {
 module.exports = (router) => {
   router.post("/login", (req, res) => {
     passport.authenticate("local", { session: false }, (error, user, info) => {
-      if (error || !user) {
+      if (error) {
+        console.log(error);
         return res.status(400).json({
           message: "Something is not working.",
+          user: user,
+        });
+      } else if (!user) {
+        return res.status(400).json({
+          message: "Username not found.",
           user: user,
         });
       }
