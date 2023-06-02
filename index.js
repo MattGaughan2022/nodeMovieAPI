@@ -66,49 +66,6 @@ let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
 
-let topMovies = [
-  {
-    title: "Spirited Away",
-    director: "Hayao Miyazaki",
-  },
-  {
-    title: "Saving Private Ryan",
-    director: "Steven Spielberg",
-  },
-  {
-    title: "The Truman Show",
-    director: "Peter Weir",
-  },
-  {
-    title: "Casino Royale (2006)",
-    director: "Martin Campbell",
-  },
-  {
-    title: "Interstellar",
-    director: "Christopher Nolan",
-  },
-  {
-    title: "42",
-    director: "Brian Helgeland",
-  },
-  {
-    title: "Hereditary",
-    director: "Ari Aster",
-  },
-  {
-    title: "Black Panther",
-    director: "Ryan Coogler",
-  },
-  {
-    title: "Inception",
-    director: "Christopher Nolan",
-  },
-  {
-    title: "Coco",
-    director: "Adrian Molina, Lee Unkrich",
-  },
-];
-
 // setup the logger
 app.use(morgan("common", { stream: accessLogStream }));
 
@@ -181,23 +138,50 @@ app.get(
   }
 );
 
-app.get("/genres", (req, res) => {
-  res.send(
-    "Successful GET request via genre name returning data describing/listing all genres"
-  );
-});
+app.get(
+  "/genres",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Genres.find()
+      .then((genres) => {
+        res.status(201).json(genres);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
-app.get("/genres/:name", (req, res) => {
-  res.send(
-    "Successful GET request via genre name returning data describing the specified genre"
-  );
-});
+app.get(
+  "/genres/:name",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Genres.findOne({ Name: req.params.name })
+      .then((genres) => {
+        res.status(201).json(genres);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
-app.get("/directors/:name", (req, res) => {
-  res.send(
-    "Successful GET request via name of a director, returning data describing the specified director (bio, birth year, [death year])"
-  );
-});
+app.get(
+  "/directors/:name",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Directors.findOne({ Name: req.params.name })
+      .then((director) => {
+        res.json(director);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send("Error: " + err);
+      });
+  }
+);
 
 app.post(
   "/users",
@@ -281,40 +265,46 @@ app.put(
 );
 
 app.post("/user/lists/:name", (req, res) => {
-  res.send("Successful POST request for creating a new movie list");
+  res.send(
+    "Successful POST request for creating a new movie list (Not Yet Implemented)"
+  );
 });
 
 app.put("/user/lists/:name", (req, res) => {
-  res.send("Successful PUT request for updating list info (add movie)");
+  res.send(
+    "Successful PUT request for updating list info (add movie) (Not Yet Implemented)"
+  );
 });
 app.delete("/user/lists/:name", (req, res) => {
-  res.send("Successful DELETE request for updating list info (remove movie)");
+  res.send(
+    "Successful DELETE request for updating list info (remove movie) (Not Yet Implemented)"
+  );
 });
-app.delete(
-  "/users/:Username",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    Users.findOneAndRemove({ Username: req.params.Username })
-      .then((user) => {
-        if (!user) {
-          res.status(400).send(req.params.Username + " was not found");
-        } else {
-          res.status(200).send(req.params.Username + " was deleted.");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error: " + err);
-      });
-  }
-);
+// app.delete(
+//   "/users/:Username",
+//   passport.authenticate("jwt", { session: false }),
+//   (req, res) => {
+//     Users.findOneAndRemove({ Username: req.params.Username })
+//       .then((user) => {
+//         if (!user) {
+//           res.status(400).send(req.params.Username + " was not found");
+//         } else {
+//           res.status(200).send(req.params.Username + " was deleted.");
+//         }
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//         res.status(500).send("Error: " + err);
+//       });
+//   }
+// );
 
 app.use("/", express.static("public")); //allow access to multiple files like documentation
 
 app.use((err, req, res, next) => {
   //error handling
   console.error(err.stack);
-  res.status(500).send("Something broke!");
+  res.status(500).send("Something broke! (default loading error message...)");
 });
 
 const port = process.env.PORT || 8080;

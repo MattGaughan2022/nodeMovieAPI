@@ -5,22 +5,25 @@ year, death year), detailed information about specific genres, and the user can
 interact with the API to make a user profile. This profile will allow them to
 store a list of favorite movies they can add on to. The user will be able to
 modify their profile in multiple ways and also de-register from the platform
-entirely.
+entirely. <br />
+Endpoints at continued after 'https://node-movie-api-mattg.herokuapp.com/'
 
 <ul>
   <li>
-    Return a list of ALL movies to the user. GET method, accessed by '/movies'
-    URL. No parameters. Returns JSON list of movies as so '{ "title":
-    "movie_title" "director": "directorName" }'
+    Return a list of ALL movies to the user. GET method, accessed by
+    <b>'/movies'</b>
+    URL. No parameters. Returns JSON list of all movies in the database in a
+    template listed in the next documentation endpoint.
   </li>
   <li>
     Return data (description, genre, director, image URL, whether it’s featured
     or not) about a single movie by title to the user. GET method, accessed by
-    '/movies/:movieTitle' where ':movieTitle' is the title of the movie. See END
-    of documentation page for full list of movies.
+    <b>'/movies/:movieTitle'</b> where ':movieTitle' is the title of the movie.
+    See END of documentation page for full list of movies.
     <ul>
       <li>
-        Returns a JSON object as such:
+        'https://node-movie-api-mattg.herokuapp.com/movies/Spirited%20Away'
+        returns a JSON object as such:
         <code>
           <br />
           {
@@ -55,29 +58,36 @@ entirely.
     </ul>
   </li>
   <li>
-    Return a list of ALL genres to the user. GET method, accessed by '/genres'
-    URL. No parameters. Returns JSON list (NOT YET IMPLEMENTED) of genres as so
-    '{ "Genre": "Thriller" "Description": "Action-packed and fast-paced with
-    moments full of tension, anxiety, and fear" }'
+    Return a list of ALL genres to the user. GET method, accessed by
+    <b>'/genres'</b>
+    URL. No parameters. Returns JSON list of genres as so '{ "Genre": "Thriller"
+    "Description": "Action-packed and fast-paced with moments full of tension,
+    anxiety, and fear" }'
   </li>
   <li>
     Return data of the specified genre to the user. GET method, accessed by
-    '/genres/:genreName' URL where ':name' parameter is the name of a genre.
-    Returns JSON list (NOT YET IMPLEMENTED) of the specific genre as so '{
-    "Genre": "Thriller" "Description": "Action-packed and fast-paced with
-    moments full of tension, anxiety, and fear" }'
+    <b>'/genres/:genreName'</b> URL where ':name' parameter is the name of a
+    genre. Returns JSON list of the specific genre as so '{ "Genre": "Thriller"
+    "Description": "Action-packed and fast-paced with moments full of tension,
+    anxiety, and fear" }'
+  </li>
+  <li>
+    Return list of all directors to the user. GET method, accessed by
+    <b>'/directors'</b> URL. Returns JSON list of all directors as so '{ "Full
+    Name": "Hayao Miyazaki" "Birth Year": "1941" }'
   </li>
   <li>
     Return data of the specified director to the user. GET method, accessed by
-    '/directors/:name' URL where ':name' parameter is the name of a director.
-    Returns JSON list (NOT YET IMPLEMENTED) of the specific director as so '{
-    "Full Name": "Hayao Miyazaki" "Birth Year": "1941" }'
+    <b>'/directors/:name'</b> URL where ':name' parameter is the name of a
+    director. Returns JSON list of the specific director as so '{ "Full Name":
+    "Hayao Miyazaki" "Birth Year": "1941" }'
   </li>
   <li>
-    Allow new users to register via POST method. URL ends in '/users/:name'
-    where ':name' is the username of the new user. Fields included in a user's
-    object are: "Username", "Password" "Email", "Birthday", and
-    "FavoriteMovies"(array).
+    Allow new users to register via POST method. URL ends in
+    <b>'/users/'</b>
+    and is expecting a JSON input with fields from the user object template:
+    "Username", "Password" "Email", "Birthday", and "FavoriteMovies"(array,
+    FIELD NOT YET IMPLEMENTED).
     <ul>
       <li>
         Expects a JSON object as such:
@@ -123,23 +133,24 @@ entirely.
   </li>
   <li>
     Allow users to create a list of favorite movies via POST method to the URL
-    ending '/user/lists/:name' where ':name' is the name of the list.
+    ending '/user/lists/:name' where ':name' is the name of the list. (NOT YET
+    IMPLEMENTED)
   </li>
   <li>
     Allow users to update a list of favorite movies and ADD a movie to the list
     via PUT method to the URL ending '/user/lists/:name' where ':name' is the
-    name of the list.
+    name of the list. (NOT YET IMPLEMENTED)
   </li>
   <li>
     Allow users to update a list of favorite movies and REMOVE a movie to the
     list via DELETE method to the URL ending '/user/lists/:name' where ':name'
-    is the name of the list.
+    is the name of the list. (NOT YET IMPLEMENTED)
   </li>
   <li>
     Allow users to DE-register via DELETE method. URL ends in '/users/:Username'
     where ':name' is the username of the user. Expects a ':Username' parameter
     of a valid, registered username. Simple response stating the user is
-    deleted, or the user was not found.
+    deleted, or the user was not found. (NOT YET IMPLEMENTED)
   </li>
 </ul>
 <p>Full list of movies:</p>
