@@ -115,8 +115,8 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Movies.find()
-      .populate({ path: "Directors", populate: { path: "Name" } })
-      .populate({ path: "Genres", populate: { path: "Name" } })
+      .populate({ path: "Director", populate: { path: "Name" } })
+      .populate({ path: "Genre", populate: { path: "Name" } })
       .then((movies) => {
         res.status(201).json(movies);
       })
