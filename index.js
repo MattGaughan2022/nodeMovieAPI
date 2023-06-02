@@ -100,6 +100,7 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Users.findOne({ Username: req.params.Username })
+      .select(["-Password"])
       .then((user) => {
         res.json(user);
       })
