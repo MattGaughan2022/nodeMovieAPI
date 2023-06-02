@@ -18,24 +18,20 @@ passport.use(
       Users.findOne({ Username: username })
         .then((user) => {
           if (!user) {
-            console.log("Username not found.");
+            console.log("Specified username not found.");
             return document(null, false, { message: "Username was not found" });
           }
-          if (error) {
-            console.log(error);
-            return asyncFunc(error);
-          }
-
           if (!user.validatePassword(password)) {
             console.log("incorrect password");
             return asyncFunc(null, false, { message: "Incorrect password." });
           }
-
+          console.log("Done.");
           return asyncFunc(null, user);
         })
 
         .catch((error) => {
           console.log("Something went wrong");
+          console.log(error);
           return asyncFunc("Error: " + error).status(400);
         });
     }
