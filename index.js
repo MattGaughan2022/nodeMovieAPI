@@ -118,8 +118,6 @@ app.get(
       .then((movies) => {
         res.status(201).json(movies);
       })
-      .populate("Director", "Name")
-      .populate("Genre", "Name")
       .catch((err) => {
         console.error(err);
         res.status(500).send("Error: " + err);
@@ -132,9 +130,8 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Movies.findOne({ Title: req.params.movieTitle })
-      .populate("Director", "Name")
-      .populate("Genre", "Name")
       .then((movie) => {
+        movie.populate("Director", "Name").populate("Genre", "Name");
         res.json(movie);
       })
       .catch((err) => {
