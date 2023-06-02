@@ -124,7 +124,8 @@ app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Users.find("-Password")
+    Users.find()
+      .select(["-Password"])
       .then((users) => {
         res.status(201).json(users);
       })
