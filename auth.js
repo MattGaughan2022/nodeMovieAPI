@@ -25,6 +25,7 @@ module.exports = (router) => {
           user: user,
         });
       } else if (!user) {
+        console.log(error);
         return res.status(400).json({
           message: "Username not found.",
           user: user,
