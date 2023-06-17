@@ -121,7 +121,11 @@ app.get(
   (req, res) => {
     Movies.find().populate('Director').populate('Genre')
       .then((movies) => {
-        res.status(201).json(movies);
+        res.status(201).json(
+          movies,
+          movies.Genre,
+          movies.Director
+          );
       })
       .catch((err) => {
         console.error(err);
