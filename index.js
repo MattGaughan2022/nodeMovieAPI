@@ -120,32 +120,18 @@ app.get(
   // passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Movies.find().populate("Director", ["Name", "Bio"]).populate("Genre", "Name")
-    .exec((err, movies)=>{
-      if(err){
+      .then((movies) => {
+      
+        res.status(201).json(
+          movies.Director.Name,
+          movies.Director.Bio,
+          movies.Genre.Name
+          );
+      })
+      .catch((err) => {
         console.error(err);
         res.status(500).send("Error: " + err);
-      }
-      else{
-        res.status(201).json(
-        movies.Director,
-        movies.Genre,
-        movies
-        )
-      }
-    })
-
-
-
-      // .then((movies) => {
-      
-      //   res.status(201).json(
-      //     movies,
-      //     );
-      // })
-      // .catch((err) => {
-      //   console.error(err);
-      //   res.status(500).send("Error: " + err);
-      // });
+      });
   }
 );
 
