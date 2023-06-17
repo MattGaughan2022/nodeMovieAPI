@@ -120,7 +120,7 @@ app.get(
   // passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Movies.find().populate("Director", ["Name", "Bio"]).populate("Genre", "Name")
-    .exec((err, movie)=>{
+    .exec((err, movies)=>{
       if(err){
         console.error(err);
         res.status(500).send("Error: " + err);
