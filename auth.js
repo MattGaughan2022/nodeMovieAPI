@@ -22,7 +22,7 @@ module.exports = (router) => {
         console.log(error);
         return res.status(400).json({
           message: "Something is not working.",
-          messsage: "Error: " + error,
+          message: "Error: " + error,
           user: user,
         });
       }
