@@ -120,8 +120,8 @@ app.get(
   // passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Movies.find()
-    .select(Genre.Name)
-    .select(Director.Name)
+    .select("genre.Name")
+    .select("director.Name")
       .then((movies) => {
         res.status(201).json(movies);
       })
