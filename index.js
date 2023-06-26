@@ -263,7 +263,7 @@ app.put(
   (req, res) => {
     Users.findOne({ Username: req.params.Username }).then((user) => {
       if (user) {
-        if (req.body.oldPassword == user.Password) {
+        if (validatePassword(user.validatePassword(OldPassword))) {
           Users.updateOne(
             { Username: req.params.Username },
             {
