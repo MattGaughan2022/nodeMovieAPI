@@ -263,23 +263,28 @@ app.put(
   (req, res) => {
     Users.findOne({ Username: req.params.Username }).then((user) => {
       if (user) {
-        Users.updateOne(
-          { Username: req.params.Username },
-          {
-            $set: {
-              Username: req.body.Username,
-              Password: req.body.Password,
-              Email: req.body.Email,
-            },
-          }
-        )
-          .then((user) => {
-            res.status(201).json(user);
-          })
-          .catch((error) => {
-            console.error(error);
-            return res.status(500).send("Error: " + error);
-          });
+        if (req.body.oldPassword == user.Password) {
+          Users.updateOne(
+            { Username: req.params.Username },
+            {
+              $set: {
+                Username: req.body.Username,
+                Password: req.body.Password,
+                Email: req.body.Email,
+                Birthday: req.body.Birthday,
+              },
+            }
+          )
+            .then((user) => {
+              res.status(201).json(user);
+            })
+            .catch((error) => {
+              console.error(error);
+              return res.status(500).send("Error: " + error);
+            });
+        } else {
+          return res.status(400).send("Error occurred on update.");
+        }
       } else {
         return res.status(400).send(req.params.Username + " does not exist");
       }
