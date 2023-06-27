@@ -289,40 +289,40 @@ app
     res.status(500).send("Error: " + error);
   });
 
-app.put(
-  "/users/:Username",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    Users.findOne({ Username: req.params.Username }).then((user) => {
-      if (user) {
-        if (validatePassword(user.validatePassword(OldPassword))) {
-          Users.updateOne(
-            { Username: req.params.Username },
-            {
-              $set: {
-                Username: req.body.Username,
-                Password: req.body.Password,
-                Email: req.body.Email,
-                Birthday: req.body.Birthday,
-              },
-            }
-          )
-            .then((user) => {
-              res.status(201).json(user);
-            })
-            .catch((error) => {
-              console.error(error);
-              return res.status(500).send("Error: " + error);
-            });
-        } else {
-          return res.status(400).send("Error occurred on update.");
-        }
-      } else {
-        return res.status(400).send(req.params.Username + " does not exist");
-      }
-    });
-  }
-);
+// app.put(
+//   "/users/:Username",
+//   passport.authenticate("jwt", { session: false }),
+//   (req, res) => {
+//     Users.findOne({ Username: req.params.Username }).then((user) => {
+//       if (user) {
+//         if (validatePassword(user.validatePassword(OldPassword))) {
+//           Users.updateOne(
+//             { Username: req.params.Username },
+//             {
+//               $set: {
+//                 Username: req.body.Username,
+//                 Password: req.body.Password,
+//                 Email: req.body.Email,
+//                 Birthday: req.body.Birthday,
+//               },
+//             }
+//           )
+//             .then((user) => {
+//               res.status(201).json(user);
+//             })
+//             .catch((error) => {
+//               console.error(error);
+//               return res.status(500).send("Error: " + error);
+//             });
+//         } else {
+//           return res.status(400).send("Error occurred on update.");
+//         }
+//       } else {
+//         return res.status(400).send(req.params.Username + " does not exist");
+//       }
+//     });
+//   }
+// );
 
 app.post("/user/lists/:name", (req, res) => {
   res.send(
