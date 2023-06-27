@@ -227,67 +227,59 @@ app.post(
   }
 );
 
-app
-  .put(
-    //register copypasta
-    "/users/:Username",
-    passport.authenticate("jwt", { session: false }),
-    (req, res) => {
-      [
-        check("Username", "Username is required").isLength({ min: 5 }),
-        check(
-          "Username",
-          "Username contains non alphanumeric characters - not allowed."
-        ).isAlphanumeric(),
-        check(
-          "OldPassword",
-          "Current password must be entered to make changes."
-        )
-          .not()
-          .isEmpty(),
-        check("Email", "Email does not appear to be valid").isEmail(),
-      ],
-        // alert("Current password must be entered to make changes.")
-        (req, res) => {
-          let errors = validationResult(req);
+app.put(
+  //register copypasta
+  "/users/:Username",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    [
+      check("Username", "Username is required").isLength({ min: 5 }),
+      check(
+        "Username",
+        "Username contains non alphanumeric characters - not allowed."
+      ).isAlphanumeric(),
+      check("OldPassword", "Current password must be entered to make changes.")
+        .not()
+        .isEmpty(),
+      check("Email", "Email does not appear to be valid").isEmail(),
+    ],
+      // alert("Current password must be entered to make changes.")
+      (req, res) => {
+        let errors = validationResult(req);
 
-          if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-          }
-          if (
-            req.body.OldUsername !== req.body.Username &&
-            Users.findOne({ Username: req.body.Username })
-          ) {
-            res.status(400).send(req.body.Username + "already exists");
-          }
-          if (req.body.OldUsername === req.params.Username) {
-            let hashedPassword = Users.hashPassword(req.body.Password);
-            Users.findOneAndUpdate(
-              { Username: req.body.OldUsername },
-              {
-                $set: {
-                  Username: req.body.Username,
-                  Password: hashedPassword,
-                  Email: req.body.Email,
-                  Birthday: req.body.Birthday,
-                },
-              }
-            )
-              .then((user) => {
-                res.status(201).json(user);
-              })
-              .catch((error) => {
-                console.error(error);
-                res.status(500).send("Error: " + error);
-              });
-          } else req.status(401).send(req.body.OldUsername + "unauthorized.");
-        };
-    }
-  )
-  .catch((error) => {
-    console.error(error);
-    res.status(500).send("Error: " + error);
-  });
+        if (!errors.isEmpty()) {
+          return res.status(422).json({ errors: errors.array() });
+        }
+        if (
+          req.body.OldUsername !== req.body.Username &&
+          Users.findOne({ Username: req.body.Username })
+        ) {
+          res.status(400).send(req.body.Username + "already exists");
+        }
+        if (req.body.OldUsername === req.params.Username) {
+          let hashedPassword = Users.hashPassword(req.body.Password);
+          Users.findOneAndUpdate(
+            { Username: req.body.OldUsername },
+            {
+              $set: {
+                Username: req.body.Username,
+                Password: hashedPassword,
+                Email: req.body.Email,
+                Birthday: req.body.Birthday,
+              },
+            }
+          )
+            .then((user) => {
+              res.status(201).json(user);
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send("Error: " + error);
+            });
+        } else req.status(401).send(req.body.OldUsername + "unauthorized.");
+      };
+  }
+);
 
 // app.put(
 //   "/users/:Username",
