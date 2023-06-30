@@ -249,11 +249,35 @@ app.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
+
+    function updateProfile() {
+      let hashedPassword = Users.hashPassword(req.body.Password);
+      Users.findOneAndUpdate(
+        { Username: req.body.OldUsername },
+        {
+          $set: {
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          },
+        }
+      )
+        .then((user) => {
+          res.status(200).json(user);
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).json(error);
+        });
+    }
+    //else req.status(401).send(req.body.OldUsername + "unauthorized.");
+
     if (
       req.body.OldUsername !== req.body.Username &&
       Users.findOne({ Username: req.body.Username })
     ) {
-      res.status(400).send(req.body.Username + "already exists");
+      return res.status(400).send(req.body.Username + "already exists");
     }
     if (req.body.OldUsername === req.params.Username) {
       let hashedPassword = Users.hashPassword(req.body.Password);
