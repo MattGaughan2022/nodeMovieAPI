@@ -236,9 +236,7 @@ app.put(
       "Username",
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
-    check("OldPassword", "Current password must be entered to make changes.")
-      .not()
-      .isEmpty(),
+    
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
@@ -401,7 +399,7 @@ app.use("/", express.static("public")); //allow access to multiple files like do
 app.use((err, req, res, next) => {
   //error handling
   console.error(err.stack);
-  res.status(500).send("Something broke! (default loading error message...)");
+  res.status(500).send("Something broke! (default API error message...)");
 });
 
 const port = process.env.PORT || 8080;
