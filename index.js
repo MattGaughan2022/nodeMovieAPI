@@ -259,16 +259,15 @@ app.put(
             Email: req.body.Email,
             Birthday: req.body.Birthday,
           }
-        }, {new: true}, (err, infoUpdated)=>{
-          if(err){
-            console.error(err);
-            res.status(500).send("Error: " + err);
-          }
-          else{
-            res.status(200).json(infoUpdated);
-          }
-          }
-      );
+        }
+      ).then(
+        (infoUpdated) => {
+        res.status(200).json(infoUpdated)
+      }).catch(
+        (error)=>{
+        console.log(error)
+        res.status(500).send("Error " + error)
+      });
     }
 
     if(req.params.Username === req.user.Username){
