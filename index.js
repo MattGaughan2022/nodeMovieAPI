@@ -236,7 +236,6 @@ app.put(
       "Username",
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
-    
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
@@ -285,7 +284,7 @@ app.put(
         });
       }
       else{
-        updateUser();
+        updateInfo();
       }
     }
     else{
