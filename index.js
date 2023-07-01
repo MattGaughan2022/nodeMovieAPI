@@ -230,7 +230,6 @@ app.post(
 app.put(
   //register copypasta
   "/users/:Username",
-  passport.authenticate("jwt", { session: false }),
   [
     check("Username", "Username is required").isLength({ min: 5 }),
     check(
@@ -242,6 +241,7 @@ app.put(
       .isEmpty(),
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
+  passport.authenticate("jwt", { session: false }),
   // alert("Current password must be entered to make changes.")
   (req, res) => {
     let errors = validationResult(req);
@@ -250,56 +250,79 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    function updateProfile() {
-      let hashedPassword = Users.hashPassword(req.body.Password);
+    function updateInfo(){
+    let hashedPassword = Users.hashPassword(req.body.Password);
+      
       Users.findOneAndUpdate(
-        { Username: req.body.OldUsername },
+        { Username: req.params.Username },
         {
           $set: {
             Username: req.body.Username,
             Password: hashedPassword,
             Email: req.body.Email,
             Birthday: req.body.Birthday,
-          },
-        }
-      )
-        .then((user) => {
-          res.status(200).json(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).json(error);
-        });
+          }
+        }, {new: true}, (err, infoUpdated)=>{
+          if(err){
+            console.error(err);
+            res.status(500).send("Error: " + err);
+          }
+          else{
+            res.status(200).json(infoUpdated);
+          }
+          }
+      );
     }
+
+    if(req.params.Username === req.user.Username){
+      if(req.body.Username !== req.user.Username){
+        Users.findOne({
+          Username: req.body.Username
+        }).then(user=>{
+          if(user){
+            return res.status(400).send("Username '" + req.body.Username + "' is already taken")
+          } else{
+            updateInfo();
+          }
+        });
+      }
+      else{
+        updateUser();
+      }
+    }
+    else{
+      res.status(500).send("Unauthorized.");
+    }
+    
     //else req.status(401).send(req.body.OldUsername + "unauthorized.");
 
-    if (
-      req.body.OldUsername !== req.body.Username &&
-      Users.findOne({ Username: req.body.Username })
-    ) {
-      return res.status(400).send(req.body.Username + "already exists");
-    }
-    if (req.body.OldUsername === req.params.Username) {
-      let hashedPassword = Users.hashPassword(req.body.Password);
-      Users.findOneAndUpdate(
-        { Username: req.body.OldUsername },
-        {
-          $set: {
-            Username: req.body.Username,
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          },
-        }
-      )
-        .then((user) => {
-          res.status(201).json(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send("Error: " + error);
-        });
-    } else req.status(401).send(req.body.OldUsername + "unauthorized.");
+    // if (
+    //   req.body.OldUsername !== req.body.Username &&
+    //   Users.findOne({ Username: req.body.Username })
+    // ) {
+    //   return res.status(400).send(req.body.Username + "already exists");
+    // }
+    // if (req.body.OldUsername === req.params.Username) {
+    //   let hashedPassword = Users.hashPassword(req.body.Password);
+    //   Users.findOneAndUpdate(
+    //     { Username: req.body.OldUsername },
+    //     {
+    //       $set: {
+    //         Username: req.body.Username,
+    //         Password: hashedPassword,
+    //         Email: req.body.Email,
+    //         Birthday: req.body.Birthday,
+    //       },
+    //     }
+    //   )
+    //     .then((user) => {
+    //       res.status(201).json(user);
+    //     })
+    //     .catch((error) => {
+    //       console.error(error);
+    //       res.status(500).send("Error: " + error);
+    //     });
+    // } else req.status(401).send(req.body.OldUsername + "unauthorized.");
   }
 );
 
