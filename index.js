@@ -262,7 +262,7 @@ app.put(
         }
       ).then(
         (infoUpdated) => {
-        res.status(200).json(infoUpdated)
+        res.status(200).send(infoUpdated)
       }).catch(
         (error)=>{
         console.log(error)
@@ -290,85 +290,70 @@ app.put(
       res.status(500).send("Unauthorized.");
     }
     
-    //else req.status(401).send(req.body.OldUsername + "unauthorized.");
-
-    // if (
-    //   req.body.OldUsername !== req.body.Username &&
-    //   Users.findOne({ Username: req.body.Username })
-    // ) {
-    //   return res.status(400).send(req.body.Username + "already exists");
-    // }
-    // if (req.body.OldUsername === req.params.Username) {
-    //   let hashedPassword = Users.hashPassword(req.body.Password);
-    //   Users.findOneAndUpdate(
-    //     { Username: req.body.OldUsername },
-    //     {
-    //       $set: {
-    //         Username: req.body.Username,
-    //         Password: hashedPassword,
-    //         Email: req.body.Email,
-    //         Birthday: req.body.Birthday,
-    //       },
-    //     }
-    //   )
-    //     .then((user) => {
-    //       res.status(201).json(user);
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //       res.status(500).send("Error: " + error);
-    //     });
-    // } else req.status(401).send(req.body.OldUsername + "unauthorized.");
   }
 );
-
-// app.put(
-//   "/users/:Username",
+//for implementing multiple lists and creation of (i.e. 'watchlist' vs 'favorites')
+// app.get(
+//   "/users/:Username/lists/:ListName",
 //   passport.authenticate("jwt", { session: false }),
 //   (req, res) => {
-//     Users.findOne({ Username: req.params.Username }).then((user) => {
-//       if (user) {
-//         if (validatePassword(user.validatePassword(OldPassword))) {
-//           Users.updateOne(
-//             { Username: req.params.Username },
-//             {
-//               $set: {
-//                 Username: req.body.Username,
-//                 Password: req.body.Password,
-//                 Email: req.body.Email,
-//                 Birthday: req.body.Birthday,
-//               },
-//             }
-//           )
-//             .then((user) => {
-//               res.status(201).json(user);
-//             })
-//             .catch((error) => {
-//               console.error(error);
-//               return res.status(500).send("Error: " + error);
-//             });
-//         } else {
-//           return res.status(400).send("Error occurred on update.");
-//         }
-//       } else {
-//         return res.status(400).send(req.params.Username + " does not exist");
-//       }
-//     });
+//     Users.findOne({ Name: req.params.Username })
+//       .then((favoriteMovies) => {
+//         res.status(201).json(favoriteMovies);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//         res.status(500).send("Error: " + err);
+//       });
 //   }
 // );
 
-app.post("/user/lists/:name", (req, res) => {
-  res.send(
-    "Successful POST request for creating a new movie list (Not Yet Implemented)"
-  );
-});
+app.post("/users/:Username/list/:MovieID",
+passport.authenticate("jwt", { session: false }),
+(req, res) => {
+  if(req.params.Username === req.user.Username){
+  Users.findOneAndUpdate({ Username: req.params.Username },{
+    $push:{FavoriteMovies: req.params.movieID}})
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+  }
+  else{
+    res.status(500).send("Unauthorized.");
+  }
+}
+);
 
-app.put("/user/lists/:name", (req, res) => {
+app.delete("/users/:Username/list/:MovieID",
+passport.authenticate("jwt", { session: false }),
+(req, res) => {
+  if(req.params.Username === req.user.Username){
+  Users.findOneAndUpdate({ Username: req.params.Username },{
+    $pull:{FavoriteMovies: req.params.movieID}})
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+  }
+  else{
+    res.status(500).send("Unauthorized.");
+  }
+}
+);
+
+app.put("/users/:Username/lists/:ListName/:MovieID", (req, res) => {
   res.send(
     "Successful PUT request for updating list info (add movie) (Not Yet Implemented)"
   );
 });
-app.delete("/user/lists/:name", (req, res) => {
+app.delete("/users/:Username/lists/:ListName/:MovieID", (req, res) => {
   res.send(
     "Successful DELETE request for updating list info (remove movie) (Not Yet Implemented)"
   );
