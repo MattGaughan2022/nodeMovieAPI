@@ -313,7 +313,7 @@ passport.authenticate("jwt", { session: false }),
 (req, res) => {
   if(req.params.Username === req.user.Username){
   Users.findOneAndUpdate({ Username: req.params.Username },{
-    $push:{FavoriteMovies: req.params.movieID}})
+    $push:{FavoriteMovies: req.params.MovieID}})
     .then((user) => {
       res.status(200).json(user);
     })
@@ -326,6 +326,7 @@ passport.authenticate("jwt", { session: false }),
     res.status(500).send("Unauthorized.");
   }
 }
+
 );
 
 app.delete("/users/:Username/list/:MovieID",
