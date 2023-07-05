@@ -315,7 +315,7 @@ passport.authenticate("jwt", { session: false }),
   Users.findOneAndUpdate({ Username: req.params.Username },{
     $push:{FavoriteMovies: req.params.MovieID}})
     .then((success) => {
-      res.status(200).json({user, success});
+      res.status(200).json(success);
     })
     .catch((err) => {
       console.error(err);
