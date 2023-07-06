@@ -312,8 +312,10 @@ app.post("/users/:Username/list/:MovieID",
 passport.authenticate("jwt", { session: false }),
 (req, res) => {
   if(req.params.Username === req.user.Username){
-  Users.findOneAndUpdate({ Username: req.params.Username },{
-    $push:{FavoriteMovies: req.params.MovieID}})
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {$push:{FavoriteMovies: req.params.MovieID}},
+    {returnOriginal: false})
     .then((success) => {
       console.log(success);
       return res.status(201).send({success});
@@ -334,8 +336,10 @@ app.delete("/users/:Username/list/:MovieID",
 passport.authenticate("jwt", { session: false }),
 (req, res) => {
   if(req.params.Username === req.user.Username){
-  Users.findOneAndUpdate({ Username: req.params.Username },{
-    $pull:{FavoriteMovies: req.params.MovieID}})
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {$pull:{FavoriteMovies: req.params.MovieID}},
+    {returnOriginal: false})
     .then((success) => {
       console.log(success);
       return res.status(201).send({success});
