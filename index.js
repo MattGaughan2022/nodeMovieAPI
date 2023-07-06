@@ -316,7 +316,7 @@ passport.authenticate("jwt", { session: false }),
     $push:{FavoriteMovies: req.params.MovieID}})
     .then((success) => {
       console.log(success);
-      res.status(201).send({success});
+      return res.status(201).send({success});
     })
     .catch((err) => {
       console.error(err);
