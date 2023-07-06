@@ -259,10 +259,12 @@ app.put(
             Email: req.body.Email,
             Birthday: req.body.Birthday,
           }
-        }
+        },
+        {returnOriginal: false}
       ).then(
         (infoUpdated) => {
-        res.status(200).send(infoUpdated)
+          console.log(infoUpdated);
+        return res.status(201).send(infoUpdated)
       }).catch(
         (error)=>{
         console.log(error)
