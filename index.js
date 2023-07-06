@@ -316,7 +316,7 @@ passport.authenticate("jwt", { session: false }),
     $push:{FavoriteMovies: req.params.MovieID}})
     .then((success) => {
       console.log(success);
-      res.status(201).json(success);
+      res.status(201).send(success);
     })
     .catch((err) => {
       console.error(err);
@@ -335,9 +335,9 @@ passport.authenticate("jwt", { session: false }),
 (req, res) => {
   if(req.params.Username === req.user.Username){
   Users.findOneAndUpdate({ Username: req.params.Username },{
-    $pull:{FavoriteMovies: req.params.movieID}})
-    .then((user) => {
-      res.status(200).json(user);
+    $pull:{FavoriteMovies: req.params.MovieID}})
+    .then((success) => {
+      res.status(201).send(success);
     })
     .catch((err) => {
       console.error(err);
@@ -345,7 +345,7 @@ passport.authenticate("jwt", { session: false }),
     });
   }
   else{
-    res.status(500).send("Unauthorized.");
+    res.status(500).send("Unauthorized or fatal error.");
   }
 }
 );
