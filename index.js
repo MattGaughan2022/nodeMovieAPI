@@ -263,7 +263,6 @@ app.put(
         {returnOriginal: false}
       ).then(
         (infoUpdated) => {
-          console.log(infoUpdated);
         return res.status(201).send(infoUpdated)
       }).catch(
         (error)=>{
@@ -277,7 +276,10 @@ app.put(
         Users.findOne({
           Username: req.body.Username
         }).then(user=>{
-          if(user){
+          if (!user.validatePassword(OldPassword)) {
+            return res.status(401).send({ message: "Incorrect password." });
+          }
+          else if(user){
             return res.status(400).send("Username '" + req.body.Username + "' is already taken")
           } else{
             updateInfo();
@@ -285,6 +287,9 @@ app.put(
         });
       }
       else{
+        if (!user.validatePassword(OldPassword)) {
+          return res.status(401).send({ message: "Incorrect password." });
+        }
         updateInfo();
       }
     }
