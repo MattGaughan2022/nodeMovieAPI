@@ -276,10 +276,10 @@ app.put(
         Users.findOne({
           Username: req.body.Username
         }).then(user=>{
-          if (!user.validatePassword(OldPassword)) {
-            return res.status(401).send({ message: "Incorrect password." });
-          }
-          else if(user){
+          // if (!user.validatePassword(OldPassword)) {
+          //   return res.status(401).send({ message: "Incorrect password." });
+          // }
+          if(user){
             return res.status(400).send("Username '" + req.body.Username + "' is already taken")
           } else{
             updateInfo();
@@ -287,9 +287,9 @@ app.put(
         });
       }
       else{
-        if (!user.validatePassword(OldPassword)) {
-          return res.status(401).send({ message: "Incorrect password." });
-        }
+        // if (!user.validatePassword(OldPassword)) {
+        //   return res.status(401).send({ message: "Incorrect password." });
+        // }
         updateInfo();
       }
     }
