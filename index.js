@@ -337,7 +337,8 @@ passport.authenticate("jwt", { session: false }),
   Users.findOneAndUpdate({ Username: req.params.Username },{
     $pull:{FavoriteMovies: req.params.MovieID}})
     .then((success) => {
-      res.status(201).send(success);
+      console.log(success);
+      return res.status(201).send({success});
     })
     .catch((err) => {
       console.error(err);
@@ -348,6 +349,7 @@ passport.authenticate("jwt", { session: false }),
     res.status(500).send("Unauthorized or fatal error.");
   }
 }
+
 );
 
 app.put("/users/:Username/lists/:ListName/:MovieID", (req, res) => {
