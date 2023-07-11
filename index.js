@@ -31,7 +31,7 @@ let allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:1234",
   "http://testsite.com",
-  "https://mattg-moviesreact.netlify.app/signup",
+  "https://mattg-moviesreact.netlify.app",
 ];
 
 app.use(
