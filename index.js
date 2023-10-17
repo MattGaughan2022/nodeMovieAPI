@@ -272,28 +272,22 @@ app.put(
     }
 
     if (req.params.Username === req.user.Username) {
-      if (req.body.Username !== req.user.Username) {
-        Users.findOne({
-          Username: req.body.Username,
-        }).then((user) => {
-          if (user) {
+      Users.findOne({
+        Username: req.body.Username,
+      }).then((user) => {
+        if (user) {
+          if (req.body.Username !== req.user.Username) {
             return res
               .status(400)
               .send("Username '" + req.body.Username + "' is already taken");
-          } else {
-            updateInfo();
           }
-        });
-      } else {
-        let data = {
-          Username: req.Username,
-          Password: req.OldPassword,
-        };
-        if (!Users.validatePassword(data.Password)) {
-          return res.status(401).send({ message: "Incorrect password." });
+        } else {
+          if (!user.validatePassword(req.OldPassword)) {
+            return res.status(401).send({ message: "Incorrect password." });
+          }
+          updateInfo();
         }
-        updateInfo();
-      }
+      });
     } else {
       res.status(500).send("Unauthorized.");
     }
