@@ -240,7 +240,7 @@ app.put(
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
-  validatePassword(req.body.OldPassword),
+  Users.validatePassword(req.body.OldPassword),
   // alert("Current password must be entered to make changes.")
   (req, res) => {
     let errors = validationResult(req);
