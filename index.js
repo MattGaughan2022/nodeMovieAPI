@@ -247,7 +247,7 @@ app.put(
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    if (!Users.validatePassword(OldPassword)) {
+    if (!Users.validatePassword(req.body.OldPassword)) {
       return res
         .status(401)
         .send("Unauthorized. Current password could not be validated.");
