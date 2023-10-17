@@ -240,6 +240,7 @@ app.put(
     check("Email", "Email does not appear to be valid").isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
+  req.validatePassword(req.body.OldPassword),
   // alert("Current password must be entered to make changes.")
   (req, res) => {
     let errors = validationResult(req);
@@ -248,9 +249,9 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
-    function updateInfo(){
-    let hashedPassword = Users.hashPassword(req.body.Password);
-      
+    function updateInfo() {
+      let hashedPassword = Users.hashPassword(req.body.Password);
+
       Users.findOneAndUpdate(
         { Username: req.params.Username },
         {
@@ -259,45 +260,44 @@ app.put(
             Password: hashedPassword,
             Email: req.body.Email,
             Birthday: req.body.Birthday,
-          }
+          },
         },
-        {returnOriginal: false}
-      ).then(
-        (infoUpdated) => {
-        return res.status(201).send(infoUpdated)
-      }).catch(
-        (error)=>{
-        console.log(error)
-        res.status(500).send("Error " + error)
-      });
+        { returnOriginal: false }
+      )
+        .then((infoUpdated) => {
+          return res.status(201).send(infoUpdated);
+        })
+        .catch((error) => {
+          console.log(error);
+          res.status(500).send("Error " + error);
+        });
     }
 
-    if(req.params.Username === req.user.Username){
-      if(req.body.Username !== req.user.Username){
+    if (req.params.Username === req.user.Username) {
+      if (req.body.Username !== req.user.Username) {
         Users.findOne({
-          Username: req.body.Username
-        }).then(user=>{
+          Username: req.body.Username,
+        }).then((user) => {
           // if (!user.validatePassword(OldPassword)) {
           //   return res.status(401).send({ message: "Incorrect password." });
           // }
-          if(user){
-            return res.status(400).send("Username '" + req.body.Username + "' is already taken")
-          } else{
+          if (user) {
+            return res
+              .status(400)
+              .send("Username '" + req.body.Username + "' is already taken");
+          } else {
             updateInfo();
           }
         });
-      }
-      else{
+      } else {
         // if (!user.validatePassword(OldPassword)) {
         //   return res.status(401).send({ message: "Incorrect password." });
         // }
         updateInfo();
       }
-    }
-    else{
+    } else {
       res.status(500).send("Unauthorized.");
     }
-    
   }
 );
 //for implementing multiple lists and creation of (i.e. 'watchlist' vs 'favorites')
@@ -316,52 +316,52 @@ app.put(
 //   }
 // );
 
-app.post("/users/:Username/list/:MovieID",
-passport.authenticate("jwt", { session: false }),
-(req, res) => {
-  if(req.params.Username === req.user.Username){
-  Users.findOneAndUpdate(
-    { Username: req.params.Username },
-    {$push:{FavoriteMovies: req.params.MovieID}},
-    {returnOriginal: false})
-    .then((success) => {
-      console.log(success);
-      return res.status(201).send({success});
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
+app.post(
+  "/users/:Username/list/:MovieID",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    if (req.params.Username === req.user.Username) {
+      Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $push: { FavoriteMovies: req.params.MovieID } },
+        { returnOriginal: false }
+      )
+        .then((success) => {
+          console.log(success);
+          return res.status(201).send({ success });
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).send("Error: " + err);
+        });
+    } else {
+      res.status(500).send("Unauthorized or fatal error.");
+    }
   }
-  else{
-    res.status(500).send("Unauthorized or fatal error.");
-  }
-}
-
 );
 
-app.delete("/users/:Username/list/:MovieID",
-passport.authenticate("jwt", { session: false }),
-(req, res) => {
-  if(req.params.Username === req.user.Username){
-  Users.findOneAndUpdate(
-    { Username: req.params.Username },
-    {$pull:{FavoriteMovies: req.params.MovieID}},
-    {returnOriginal: false})
-    .then((success) => {
-      console.log(success);
-      return res.status(201).send({success});
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
+app.delete(
+  "/users/:Username/list/:MovieID",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    if (req.params.Username === req.user.Username) {
+      Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        { $pull: { FavoriteMovies: req.params.MovieID } },
+        { returnOriginal: false }
+      )
+        .then((success) => {
+          console.log(success);
+          return res.status(201).send({ success });
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).send("Error: " + err);
+        });
+    } else {
+      res.status(500).send("Unauthorized or fatal error.");
+    }
   }
-  else{
-    res.status(500).send("Unauthorized or fatal error.");
-  }
-}
-
 );
 
 // app.put("/users/:Username/lists/:ListName/:MovieID", (req, res) => {
@@ -378,21 +378,20 @@ app.delete(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    if(req.params.Username === req.user.Username){
-    Users.findOneAndRemove({ Username: req.params.Username })
-      .then((user) => {
-        if (!user) {
-          res.status(400).send(req.params.Username + " was not found");
-        } else {
-          res.status(200).send(req.params.Username + " was deleted.");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send("Error: " + err);
-      });
-    }
-    else{
+    if (req.params.Username === req.user.Username) {
+      Users.findOneAndRemove({ Username: req.params.Username })
+        .then((user) => {
+          if (!user) {
+            res.status(400).send(req.params.Username + " was not found");
+          } else {
+            res.status(200).send(req.params.Username + " was deleted.");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).send("Error: " + err);
+        });
+    } else {
       res.status(500).send("Unauthorized or fatal error.");
     }
   }
