@@ -275,12 +275,10 @@ app.put(
       Users.findOne({
         Username: req.body.Username,
       }).then((user) => {
-        if (user) {
-          if (req.body.Username !== req.user.Username) {
-            return res
-              .status(400)
-              .send("Username '" + req.body.Username + "' is already taken");
-          }
+        if (req.body.Username !== req.user.Username) {
+          return res
+            .status(400)
+            .send("Username '" + req.body.Username + "' is already taken");
         } else {
           if (!user.validatePassword(req.OldPassword)) {
             return res.status(401).send({ message: "Incorrect password." });
