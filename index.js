@@ -243,17 +243,8 @@ app.put(
   // alert("Current password must be entered to make changes.")
   (req, res) => {
     let errors = validationResult(req);
-    let data = {
-      Username: req.Username,
-      Password: req.OldPassword,
-    };
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
-    }
-    if (!passport.authenticate(data)) {
-      return res
-        .status(401)
-        .send("Unauthorized. Current password could not be validated.");
     }
 
     function updateInfo() {
@@ -294,7 +285,11 @@ app.put(
           }
         });
       } else {
-        if (!Users.validatePassword(OldPassword)) {
+        let data = {
+          Username: req.Username,
+          Password: req.OldPassword,
+        };
+        if (!Users.validatePassword(data.Password)) {
           return res.status(401).send({ message: "Incorrect password." });
         }
         updateInfo();
