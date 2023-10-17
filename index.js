@@ -238,10 +238,6 @@ app.put(
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
     check("Email", "Email does not appear to be valid").isEmail(),
-    check(
-      Users.validatePassword(OldPassword),
-      "Current password does not match."
-    ),
   ],
   passport.authenticate("jwt", { session: false }),
   // alert("Current password must be entered to make changes.")
@@ -250,6 +246,11 @@ app.put(
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
+    }
+    if (!Users.validatePassword(OldPassword)) {
+      return res
+        .status(401)
+        .send("Unauthorized. Current password could not be validated.");
     }
 
     function updateInfo() {
