@@ -275,7 +275,11 @@ app.put(
       Users.findOne({
         Username: req.body.Username,
       }).then((user) => {
-        if (req.body.Username !== req.user.Username) {
+        if (
+          req.body.Username === req.user.Username &&
+          req.params.Username !== req.user.Username &&
+          req.body.Username !== null
+        ) {
           return res
             .status(400)
             .send("Username '" + req.body.Username + "' is already taken");
