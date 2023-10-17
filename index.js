@@ -280,9 +280,10 @@ app.put(
             .status(400)
             .send("Username '" + req.body.Username + "' is already taken");
         } else {
-          if (!user.validatePassword(req.OldPassword)) {
+          if (!user.validatePassword(req.OldPassword, user.Password)) {
             return res.status(401).send({ message: "Incorrect password." });
           }
+          console.log("password validated while updating...");
           updateInfo();
         }
       });
