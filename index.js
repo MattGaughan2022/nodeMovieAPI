@@ -243,11 +243,14 @@ app.put(
   // alert("Current password must be entered to make changes.")
   (req, res) => {
     let errors = validationResult(req);
-
+    let data = {
+      Username: req.Username,
+      Password: req.OldPassword,
+    };
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    if (!Users.validatePassword(req.body.OldPassword)) {
+    if (!passport.authenticate(data)) {
       return res
         .status(401)
         .send("Unauthorized. Current password could not be validated.");
