@@ -239,7 +239,7 @@ app.put(
     ).isAlphanumeric(),
     check("Email", "Email does not appear to be valid").isEmail(),
     check(
-      Users.validatePassword(req.body.OldPassword),
+      Users.validatePassword(OldPassword),
       "Current password does not match."
     ),
   ],
