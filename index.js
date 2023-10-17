@@ -285,9 +285,6 @@ app.put(
         Users.findOne({
           Username: req.body.Username,
         }).then((user) => {
-          if (!Users.validatePassword(OldPassword)) {
-            return res.status(401).send({ message: "Incorrect password." });
-          }
           if (user) {
             return res
               .status(400)
@@ -297,9 +294,9 @@ app.put(
           }
         });
       } else {
-        // if (!user.validatePassword(OldPassword)) {
-        //   return res.status(401).send({ message: "Incorrect password." });
-        // }
+        if (!Users.validatePassword(OldPassword)) {
+          return res.status(401).send({ message: "Incorrect password." });
+        }
         updateInfo();
       }
     } else {
