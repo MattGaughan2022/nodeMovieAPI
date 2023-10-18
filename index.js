@@ -288,8 +288,7 @@ app.put(
             .status(400)
             .send("Username '" + req.body.Username + "' is already taken");
         } else {
-          console.log(req);
-          console.log(JSON.stringify(req));
+          console.log(req.body);
           if (!user.validatePassword(req.body.OldPassword, user.Password)) {
             return res.status(401).send({ message: "Incorrect password." });
           }
