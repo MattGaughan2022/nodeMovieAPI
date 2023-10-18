@@ -237,7 +237,10 @@ app.put(
       "Username",
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
-    check("Email", "Email does not appear to be valid").isEmail(),
+    check(
+      "Email",
+      "Email does not appear to be valid" + console.log(req.body.Email)
+    ).isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
   // alert("Current password must be entered to make changes.")
