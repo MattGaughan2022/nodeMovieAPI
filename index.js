@@ -278,9 +278,9 @@ app.put(
     if (req.params.Username === req.user.Username) {
       Users.findOne({
         Username: req.body.Username,
-      }).then((user) => {
+      }).then((user1) => {
         if (
-          req.body.Username === req.user.Username &&
+          req.body.Username === user1.Username &&
           req.params.Username !== req.user.Username &&
           req.body.Username !== null
         ) {
@@ -288,13 +288,15 @@ app.put(
             .status(400)
             .send("Username '" + req.body.Username + "' is already taken");
         } else {
-          console.log(req.body);
-          console.log(user.Password);
-          if (!user.validatePassword(req.body.OldPassword, user.Password)) {
-            return res.status(401).send({ message: "Incorrect password." });
-          }
-          console.log("password validated while updating...");
-          updateInfo();
+          Users.findOne({
+            Username: req.params.Username,
+          }).then((user) => {
+            if (!user.validatePassword(req.body.OldPassword, user.Password)) {
+              return res.status(401).send({ message: "Incorrect password." });
+            }
+            console.log("password validated while updating...");
+            updateInfo();
+          });
         }
       });
     } else {
