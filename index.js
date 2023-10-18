@@ -280,6 +280,7 @@ app.put(
         Username: req.body.Username,
       }).then((user1) => {
         if (
+          user1 !== null &&
           req.body.Username === user1.Username &&
           req.params.Username !== req.user.Username &&
           req.body.Username !== null
