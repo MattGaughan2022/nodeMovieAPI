@@ -33,6 +33,7 @@ let allowedOrigins = [
   "http://testsite.com",
   "https://mattg-moviesreact.netlify.app",
   "https://mattgaughan2022.github.io/myFlix-Angular-client/",
+  "https://mattgaughan2022.github.io",
 ];
 
 app.use(
