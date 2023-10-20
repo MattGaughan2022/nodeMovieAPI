@@ -26,6 +26,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+/**
+ * approved API accessors
+ * add resource accessing API below
+ * @returns {boolean} bool response for approval or not
+ */
 const cors = require("cors");
 let allowedOrigins = [
   "http://localhost:8080",
@@ -58,14 +63,20 @@ require("./passport");
 
 app.use(morgan("common", { stream: accessLogStream }));
 
+/**
+ * default API endpoint
+ * use this to initially test for API success with low-latency or payloads
+ * @return {string} default text for a blank page
+ */
 app.get("/", (req, res) => {
   res.send("Default text of my choosing!");
 });
 
-app.get("/secreturl", (req, res) => {
-  res.send("This is a secret url with super top-secret content.");
-});
-
+/**
+ * (NYI) receives list of users and their info
+ * excludes (hashed) passwords
+ * @returns user info (NYI)
+ */
 app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
@@ -82,6 +93,11 @@ app.get(
   }
 );
 
+/**
+ * gets a user's info
+ * this is not implemented in most sites currently
+ * @returns {Object} of user info
+ */
 app.get(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
@@ -97,6 +113,11 @@ app.get(
   }
 );
 
+/**
+ * receive all movie information
+ * populates genre and director which are pointing to their
+ *      own documents in MongoDB
+ */
 app.get("/movies", (req, res) => {
   Movies.find()
     .populate("Genre", "Name -_id")
@@ -110,6 +131,10 @@ app.get("/movies", (req, res) => {
     });
 });
 
+/**
+ * find movie info based on given movie title or ID
+ * @param {string} movieTitle in the url
+ */
 app.get(
   "/movies/:movieTitle",
   passport.authenticate("jwt", { session: false }),
@@ -125,6 +150,10 @@ app.get(
   }
 );
 
+/**
+ * access all genres and their info
+ * @return {array} of genres with sub items
+ */
 app.get(
   "/genres",
   passport.authenticate("jwt", { session: false }),
@@ -140,6 +169,10 @@ app.get(
   }
 );
 
+/**
+ * access specific genre with given name
+ * @param {string} name of genre
+ */
 app.get(
   "/genres/:name",
   passport.authenticate("jwt", { session: false }),
@@ -155,6 +188,10 @@ app.get(
   }
 );
 
+/**
+ * access all directors info
+ * @return {array} of directors with sub items
+ */
 app.get(
   "/directors",
   passport.authenticate("jwt", { session: false }),
@@ -170,6 +207,10 @@ app.get(
   }
 );
 
+/**
+ * access specific director with given name
+ * @param {string} name of director
+ */
 app.get(
   "/directors/:name",
   passport.authenticate("jwt", { session: false }),
@@ -185,6 +226,11 @@ app.get(
   }
 );
 
+/**
+ * register new user
+ * primarily keep the same checks here that are in the update
+ *      user info (PUT) method below
+ */
 app.post(
   "/users",
   [
@@ -230,13 +276,11 @@ app.post(
   }
 );
 
-// check(
-//   "Email",
-//   "Email does not appear to be valid" + console.log(Email)
-// ).isEmail(),
-
+/**
+ * updates user info in mongoDB cloud database
+ * @param {string} Username of the user changing their info
+ */
 app.put(
-  //register copypasta
   "/users/:Username",
   [
     check("Username", "Username is required").isLength({ min: 5 }),
@@ -244,9 +288,9 @@ app.put(
       "Username",
       "Username contains non alphanumeric characters - not allowed."
     ).isAlphanumeric(),
+    //can add an email check or more form validation her
   ],
   passport.authenticate("jwt", { session: false }),
-  // alert("Current password must be entered to make changes.")
   (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -307,22 +351,12 @@ app.put(
     }
   }
 );
-//for implementing multiple lists and creation of (i.e. 'watchlist' vs 'favorites')
-// app.get(
-//   "/users/:Username/lists/:ListName",
-//   passport.authenticate("jwt", { session: false }),
-//   (req, res) => {
-//     Users.findOne({ Name: req.params.Username })
-//       .then((favoriteMovies) => {
-//         res.status(201).json(favoriteMovies);
-//       })
-//       .catch((err) => {
-//         console.error(err);
-//         res.status(500).send("Error: " + err);
-//       });
-//   }
-// );
 
+/**
+ * adding movieID to user's favoriteMovies list
+ * @param {number} MovieID _id of the movie being added
+ * @param {string} Username username of user adding movie to list
+ */
 app.post(
   "/users/:Username/list/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -346,7 +380,11 @@ app.post(
     }
   }
 );
-
+/**
+ * remove movie from user favoriteMovie list
+ * @param {string} Username of given user
+ * @param {string} MovieID of desired movie to remove
+ */
 app.delete(
   "/users/:Username/list/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -371,16 +409,10 @@ app.delete(
   }
 );
 
-// app.put("/users/:Username/lists/:ListName/:MovieID", (req, res) => {
-//   res.send(
-//     "Successful PUT request for updating list info (add movie) (Not Yet Implemented)"
-//   );
-// });
-// app.delete("/users/:Username/lists/:ListName/:MovieID", (req, res) => {
-//   res.send(
-//     "Successful DELETE request for updating list info (remove movie) (Not Yet Implemented)"
-//   );
-// });
+/**
+ * delete user with given username
+ * @param {string} :Username - username of the user deleting their account
+ */
 app.delete(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
